@@ -8,7 +8,7 @@ defineProps({
 
 <template>
   <span key="idx">
-    {{ title }}
+    {{ idx }} - {{ title }}
     <button @click="onRemoveTodo(idx)">x</button>
     <!-- <button @click.stop="$emit('remove-todo', idx)">Click Me</button> -->
   </span>
