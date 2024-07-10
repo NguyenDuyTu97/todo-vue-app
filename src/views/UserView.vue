@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <template v-for="(item, index) in users" :key="item.id">
-      <UserItem :i="item" />
+      <UserItem :i="item" :onDelete="handleDeleteUser" @on-delete-user="handleDeleteUser" />
     </template>
   </div>
   <div>
@@ -12,6 +12,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import UserItem from '../components/users/UserItem.vue'
+import { API_URL } from '../constants/constants'
 
 let users = ref([])
 
@@ -20,7 +21,7 @@ onMounted(() => {
 })
 
 const getUsers = async () => {
-  const url = 'https://jsonplaceholder.typicode.com/users'
+  const url = API_URL + '/users'
   try {
     const response = await fetch(url)
     if (!response.ok) {
@@ -48,5 +49,25 @@ const onChangeData = () => {
 
 const onResetData = () => {
   getUsers()
+}
+
+const handleDeleteUser = async (id) => {
+  const url = API_URL + `/users/${id}`
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE'
+    })
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+
+    const res = await response.json()
+    if (res?.id) {
+      getUsers()
+    }
+  } catch (error) {
+    console.error(error.message, 'error message')
+  }
 }
 </script>
