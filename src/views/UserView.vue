@@ -1,11 +1,17 @@
 <template lang="">
   <div>
-    <CreateUser @onCreateUser="handleCreateUser" />
+    <Button label="+" severity="info" size="small" @click="showFormAdd = !showFormAdd" />
+    <CreateUser @onCreateUser="handleCreateUser" :user-edit="userEdit" v-if="showFormAdd" />
 
     <div>---------------------------------------------------</div>
 
     <template v-for="(item, index) in users" :key="item.id">
-      <UserItem :i="item" :onDelete="handleDeleteUser" @on-delete-user="handleDeleteUser" />
+      <UserItem
+        :i="item"
+        :onDelete="handleDeleteUser"
+        @on-delete-user="handleDeleteUser"
+        @onEditUser="handleEditUser"
+      />
     </template>
   </div>
   <div>
@@ -20,11 +26,14 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
+import Button from 'primevue/button'
 import UserItem from '../components/users/UserItem.vue'
 import CreateUser from '../components/users/CreateUser.vue'
 import { API_URL } from '../constants/constants'
 
-let users = ref([])
+const users = ref([])
+const userEdit = ref(null)
+const showFormAdd = ref(false)
 
 const count = ref(10)
 const author = reactive({
@@ -92,24 +101,10 @@ const onChangeAuthorData = () => {
   count.value = -1
 }
 
-const handleDeleteUser = async (id) => {
-  const url = API_URL + `/users/${id}`
-  try {
-    const response = await fetch(url, {
-      method: 'DELETE'
-    })
+const handleEditUser = (user) => {
+  console.log(user, 'user 1111111111')
 
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`)
-    }
-
-    const res = await response.json()
-    if (res?.id) {
-      getUsers()
-    }
-  } catch (error) {
-    console.error(error.message, 'error message')
-  }
+  userEdit.value = user
 }
 
 const handleCreateUser = async (data) => {
@@ -132,6 +127,26 @@ const handleCreateUser = async (data) => {
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`)
     }
+    const res = await response.json()
+    if (res?.id) {
+      getUsers()
+    }
+  } catch (error) {
+    console.error(error.message, 'error message')
+  }
+}
+
+const handleDeleteUser = async (id) => {
+  const url = API_URL + `/users/${id}`
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE'
+    })
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+
     const res = await response.json()
     if (res?.id) {
       getUsers()

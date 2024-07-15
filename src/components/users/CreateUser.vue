@@ -18,7 +18,10 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
+const props = defineProps(['userEdit'])
+
+console.log(props, 'props 0000')
 
 const emit = defineEmits(['onCreateUser'])
 
@@ -27,12 +30,21 @@ const formData = reactive({
   gender: true
 })
 
+// Watch for changes in the prop value and update the ref
+watch(
+  () => props.userEdit,
+  (newValue) => {
+    console.log(newValue, 'newValue 000')
+    formData = newValue
+  }
+)
+
 const onSubmitForm = (event) => {
   event.preventDefault()
 
-  console.log(formData, 'formData 000')
+  console.log(props.userEdit, 'userEdit 111111')
 
-  emit('onCreateUser', formData)
+  // emit('onCreateUser', formData)
 }
 </script>
 <style lang=""></style>
