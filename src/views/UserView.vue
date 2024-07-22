@@ -45,8 +45,6 @@ const author = reactive({
 const publishedBooksMessage = computed(() => {
   console.log('publishedBooksMessage computed')
 
-  // let a = count.value > 3
-
   return author.books.length > 0 ? 'Yes' : 'No'
 })
 
@@ -78,17 +76,6 @@ const getUsers = async () => {
 }
 
 const onChangeData = () => {
-  console.log('onChangeData 001')
-
-  // users.value = [
-  //   { id: 1, name: 'NDT', isActive: true },
-  //   { id: 2, name: 'NTD', isActive: false },
-  //   { id: 3, name: 'NAD', isActive: false },
-  //   { id: 4, name: 'HVB', isActive: true }
-  // ]
-
-  // users.value.push({ id: 1, name: 'NDT', isActive: true })
-
   users.value = users.value.filter((item) => +item.id > 10)
 }
 
@@ -102,26 +89,31 @@ const onChangeAuthorData = () => {
 }
 
 const handleEditUser = (user) => {
-  console.log(user, 'user 1111111111')
-
   userEdit.value = user
 }
 
 const handleCreateUser = async (data) => {
-  const { username, gender } = data
+  const { id, name, createdAt, avatar, gender } = data || {}
   console.log(data, 'data 0000')
 
-  const url = API_URL + `/users`
+  let url = API_URL + `/users`
+  let method = 'POST'
+
+  if (id) {
+    url = API_URL + `/users/${id}`
+    method = 'PUT'
+  }
+
   try {
     const model = {
-      name: username,
-      avatar: '',
-      createdAt: Date.now(),
+      name,
+      avatar: avatar || '',
+      createdAt: createdAt || Date.now(),
       gender
     }
 
     const response = await fetch(url, {
-      method: 'POST',
+      method,
       body: JSON.stringify(model)
     })
     if (!response.ok) {
@@ -129,6 +121,8 @@ const handleCreateUser = async (data) => {
     }
     const res = await response.json()
     if (res?.id) {
+      showFormAdd.value = !showFormAdd.value
+
       getUsers()
     }
   } catch (error) {
