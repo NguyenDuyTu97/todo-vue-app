@@ -42,6 +42,11 @@
 
       <button type="submit">Submit</button>
     </form>
+
+    <p>Count: {{ store.state.count }}</p>
+    <button @click="onIncreaseCount">Increase</button>
+
+    <p>Todo true item: {{ doneTodosCount }}</p>
   </div>
 </template>
 
@@ -59,6 +64,10 @@ import {
 } from 'vue'
 import TodoItem from '../components/todo/TodoItem.vue'
 import moment from 'moment'
+import Button from 'primevue/button'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 // state
 const teachName = ref('')
@@ -111,7 +120,18 @@ onUnmounted(() => {
   // clearInterval(timerId)
 })
 
+// computed
+const doneTodosCount = computed(() => store.getters.doneTodos)
+
 // function
+
+function onIncreaseCount() {
+  store.commit('increment')
+
+  store.commit('increment')
+  store.commit('increment')
+}
+
 function onAddTodo() {
   if (!teachName.value) return
 
