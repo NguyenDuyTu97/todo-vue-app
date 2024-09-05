@@ -31,7 +31,7 @@
 
   <p>Count(store): {{ this.$store.state.count }}</p>
 
-  <!-- <GoogleLogin :callback="callback" /> -->
+  <GoogleLogin :callback="callback" />
 </template>
 <script setup>
 import { API_LOCAL_URL } from '@/constants/constants'
