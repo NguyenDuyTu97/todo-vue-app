@@ -71,7 +71,7 @@ const getUsers = async () => {
       users.value = res
     }
   } catch (error) {
-    console.error(error.message, 'error message')
+    console.error('error message: ', error.message)
   }
 }
 
